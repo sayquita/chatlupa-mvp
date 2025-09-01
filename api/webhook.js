@@ -7,9 +7,8 @@ const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN;
 const WABA_TOKEN   = process.env.WHATSAPP_TOKEN;
 const PHONE_ID     = process.env.WHATSAPP_PHONE_ID;
 
-// 1) Enviar texto con logs y manejo de errores + v22.0
+// Enviar texto con logs y manejo de errores (v23.0)
 async function sendText(to, text) {
-  // asegurar formato +E164 (+549...)
   const toFormatted = to.startsWith("+") ? to : `+${to}`;
 
   const url = `https://graph.facebook.com/v23.0/${PHONE_ID}/messages`;
@@ -19,6 +18,8 @@ async function sendText(to, text) {
     type: "text",
     text: { body: text }
   };
+
+  console.log("OUTBOUND attempt →", { to: toFormatted, text });
 
   const resp = await fetch(url, {
     method: "POST",
@@ -63,8 +64,9 @@ function parseDate(str) {
   return d.toISOString();
 }
 
-// 2) Responder 200 inmediatamente y procesar async
+// Webhook
 export default async function handler(req, res) {
+  // Verificación (GET)
   if (req.method === "GET") {
     const mode = req.query["hub.mode"];
     const token = req.query["hub.verify_token"];
@@ -75,53 +77,52 @@ export default async function handler(req, res) {
     return res.status(403).send("forbidden");
   }
 
+  // Recepción (POST)
   if (req.method === "POST") {
-    // responder YA para que Meta no timeoutee
-    res.status(200).end();
-
     try {
       const msg = req.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
-      const from = msg?.from;               // ej: "5493875921715" (sin +)
+      const from = msg?.from;             // "5493875921715" (sin +)
       const text = msg?.text?.body;
       console.log("INBOUND:", { from, text });
 
-      if (!from || !text) return;
+      if (from && text) {
+        const intent = intentFromText(text);
 
-      const intent = intentFromText(text);
-
-      switch (intent.name) {
-        case "AGENDA_HOY": {
-          const events = await CRM.agendaHoy();
-          const lines = events.length
-            ? events.map(e => `• ${dayjs(e.when).format("HH:mm")} — ${e.title}`).join("\n")
-            : "No tienes eventos hoy.";
-          await sendText(from, `Agenda de hoy:\n${lines}`);
-          break;
+        switch (intent.name) {
+          case "AGENDA_HOY": {
+            const events = await CRM.agendaHoy();
+            const lines = events.length
+              ? events.map(e => `• ${dayjs(e.when).format("HH:mm")} — ${e.title}`).join("\n")
+              : "No tienes eventos hoy.";
+            await sendText(from, `Agenda de hoy:\n${lines}`);
+            break;
+          }
+          case "CREAR_EVENTO": {
+            const [whenStr = "", title = "Evento"] = (intent.args || "").split("-").map(s => s.trim());
+            const whenISO = parseDate(whenStr || "hoy 10:00");
+            const { id } = await CRM.crearEvento({ whenISO, title });
+            await sendText(from, `✔ Evento creado (${dayjs(whenISO).format("DD/MM HH:mm")}): ${title} — ID ${id}`);
+            break;
+          }
+          case "MOVER_EVENTO":
+            await sendText(from, "✔ Evento movido (simulado en MVP)"); break;
+          case "ELIMINAR_EVENTO":
+            await sendText(from, "🗑 Evento eliminado (simulado en MVP)"); break;
+          case "AGREGAR_NOTA":
+            await sendText(from, "✔ Nota agregada (simulado en MVP)"); break;
+          case "BUSCAR_CLIENTE":
+            await sendText(from, "Resultados de clientes (simulado en MVP)"); break;
+          default:
+            await sendText(from, "Comandos:\n• ¿Qué tengo hoy?\n• crear evento hoy 15:00 - visita depto\n• nota para juan: seguimiento\n• buscar cliente juan");
         }
-        case "CREAR_EVENTO": {
-          const [whenStr = "", title = "Evento"] = (intent.args || "").split("-").map(s => s.trim());
-          const whenISO = parseDate(whenStr || "hoy 10:00");
-          const { id } = await CRM.crearEvento({ whenISO, title });
-          await sendText(from, `✔ Evento creado (${dayjs(whenISO).format("DD/MM HH:mm")}): ${title} — ID ${id}`);
-          break;
-        }
-        case "MOVER_EVENTO":
-          await sendText(from, "✔ Evento movido (simulado en MVP)"); break;
-        case "ELIMINAR_EVENTO":
-          await sendText(from, "🗑 Evento eliminado (simulado en MVP)"); break;
-        case "AGREGAR_NOTA":
-          await sendText(from, "✔ Nota agregada (simulado en MVP)"); break;
-        case "BUSCAR_CLIENTE":
-          await sendText(from, "Resultados de clientes (simulado en MVP)"); break;
-        default:
-          await sendText(from, "Comandos:\n• ¿Qué tengo hoy?\n• crear evento hoy 15:00 - visita depto\n• nota para juan: seguimiento\n• buscar cliente juan");
       }
     } catch (e) {
       console.error("WEBHOOK ERROR:", e);
     }
-    return;
+
+    // cerramos la respuesta recién al final
+    return res.status(200).end();
   }
 
   return res.status(405).send("method not allowed");
 }
-
