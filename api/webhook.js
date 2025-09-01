@@ -38,7 +38,30 @@ async function sendText(to, text) {
   }
 }
 
-// (tu intentFromText y parseDate pueden quedar igual)
+// Intents simples
+function intentFromText(t) {
+  const s = t.trim().toLowerCase();
+  if (s.includes("qué tengo hoy") || s.includes("que tengo hoy")) return { name: "AGENDA_HOY" };
+  if (s.startsWith("crear evento")) return { name: "CREAR_EVENTO", args: s.replace("crear evento", "").trim() };
+  if (s.startsWith("mover evento")) return { name: "MOVER_EVENTO", args: s.replace("mover evento", "").trim() };
+  if (s.startsWith("eliminar evento")) return { name: "ELIMINAR_EVENTO", args: s.replace("eliminar evento", "").trim() };
+  if (s.startsWith("nota")) return { name: "AGREGAR_NOTA", args: s.replace("nota", "").trim() };
+  if (s.startsWith("buscar cliente")) return { name: "BUSCAR_CLIENTE", args: s.replace("buscar cliente", "").trim() };
+  return { name: "AYUDA" };
+}
+
+function parseDate(str) {
+  const s = str.toLowerCase();
+  let d = dayjs();
+  if (s.includes("mañana")) d = d.add(1, "day");
+  const hm = s.match(/(\d{1,2})[:h\.]?(\d{2})?/);
+  if (hm) {
+    const h = parseInt(hm[1], 10);
+    const m = hm[2] ? parseInt(hm[2], 10) : 0;
+    d = d.hour(h).minute(m);
+  }
+  return d.toISOString();
+}
 
 // 2) Responder 200 inmediatamente y procesar async
 export default async function handler(req, res) {
