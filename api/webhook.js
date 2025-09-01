@@ -12,7 +12,7 @@ async function sendText(to, text) {
   // asegurar formato +E164 (+549...)
   const toFormatted = to.startsWith("+") ? to : `+${to}`;
 
-  const url = `https://graph.facebook.com/v22.0/${PHONE_ID}/messages`;
+  const url = `https://graph.facebook.com/v23.0/${PHONE_ID}/messages`;
   const payload = {
     messaging_product: "whatsapp",
     to: toFormatted,
@@ -124,3 +124,4 @@ export default async function handler(req, res) {
 
   return res.status(405).send("method not allowed");
 }
+
