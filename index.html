@@ -15,17 +15,15 @@
 
   <style>
     :root{
-      /* 🎨 Paleta de marca (tu identidad) */
-      --mint:#32E0C5;  /* PANTONE 333c  */
-      --teal:#01AAC7;  /* PANTONE 3125c */
-      --deep:#00525B;  /* PANTONE 7476c */
+      --mint:#32E0C5;  
+      --teal:#01AAC7;  
+      --deep:#00525B;  
 
-      /* Derivados */
-      --bg:#031a1d;              /* fondo muy oscuro para contraste */
-      --card:#07262a;            /* tarjetas */
-      --ink:#E7F7F5;             /* texto principal */
-      --muted:#9ad3d8;           /* texto secundario */
-      --ring:rgba(1,170,199,.35);/* resplandor */
+      --bg:#031a1d;              
+      --card:#07262a;            
+      --ink:#E7F7F5;             
+      --muted:#9ad3d8;           
+      --ring:rgba(1,170,199,.35);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -81,6 +79,26 @@
     .list{padding-left:18px; margin:10px 0 0}
     .badge-free{color:var(--mint); font-weight:800}
     a{color:var(--mint)}
+
+    /* 🎨 Estilo para la sección de chat */
+    .chat-demo{
+      margin:60px auto;
+      max-width:420px;
+      text-align:center;
+    }
+    .chat-wrapper{
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.25));
+      border:1px solid rgba(1,170,199,.25);
+      border-radius:28px;
+      padding:14px 12px 18px;
+      box-shadow:0 12px 32px rgba(0,0,0,.4);
+    }
+    .chat-wrapper img{
+      width:100%;
+      height:auto;
+      border-radius:22px;
+      display:block;
+    }
   </style>
 </head>
 <body>
@@ -121,6 +139,19 @@
           <li>Agregar notas a clientes</li>
           <li>Buscar clientes registrados</li>
         </ul>
+      </div>
+    </section>
+
+    <!-- 💬 Sección de ejemplo de chat -->
+    <section class="chat-demo">
+      <h2>Así se ve ChatLupa en WhatsApp</h2>
+      <p class="muted">
+        Consultá agenda, agregá notas y buscá clientes sin salir del chat.
+      </p>
+      <div class="chat-wrapper">
+        <img src="assets/whatsapp_chat.png" 
+             alt="Ejemplo de conversación con ChatLupa en WhatsApp"
+             loading="lazy" decoding="async">
       </div>
     </section>
 
@@ -165,5 +196,7 @@
   </script>
 </body>
 </html>
+
+
 
 
