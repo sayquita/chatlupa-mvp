@@ -15,11 +15,10 @@
 
   <style>
     :root{
-      /* Marca */
       --mint:#32E0C5;
       --teal:#01AAC7;
       --deep:#00525B;
-      /* UI */
+
       --bg:#031a1d;
       --card:#07262a;
       --ink:#E7F7F5;
@@ -30,7 +29,6 @@
     html,body{height:100%}
     body{
       margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial;
-      /* 🔹 Fondo oscuro (como antes) */
       background:
         radial-gradient(1100px 700px at 70% -10%, rgba(50,224,197,.12), transparent 60%),
         radial-gradient(900px 600px at -10% 10%, rgba(1,170,199,.12), transparent 50%),
@@ -51,16 +49,17 @@
     .brand span{font-weight:800; letter-spacing:.3px}
     .tag{font-size:12px; color:var(--muted); background:rgba(1,170,199,.08); padding:6px 10px; border-radius:999px; border:1px solid rgba(1,170,199,.25)}
 
-    /* 🔹 HERO con degradé propio, sin aclarar toda la página */
+    /* HERO */
     .hero{
       position:relative;
       display:grid; grid-template-columns:1.15fr .85fr;
       gap:32px; align-items:center;
-      padding:48px 24px;
+      padding:32px 24px 48px;
       border-radius:24px;
       overflow:hidden;
       border:1px solid rgba(1,170,199,.18);
       background:rgba(255,255,255,.02);
+      margin-top:24px;
     }
     .hero::before{
       content:"";
@@ -78,7 +77,7 @@
       header{flex-direction:column; gap:10px}
     }
 
-    h1{font-size: clamp(28px, 5vw, 48px); line-height:1.12; margin:12px 0 14px}
+    h1{font-size: clamp(28px, 5vw, 48px); line-height:1.12; margin:0 0 14px}
     .lead{font-size: clamp(16px, 2.2vw, 19px); color:var(--ink); margin:0 0 22px}
     .cta{display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:flex-start}
     @media (max-width:900px){ .cta{justify-content:center} }
@@ -103,7 +102,7 @@
       backdrop-filter:saturate(140%) blur(2px);
     }
 
-    /* 🔹 Mockup del teléfono a la derecha del hero */
+    /* Mockup */
     .mock{
       display:inline-block;
       padding:14px 12px 18px;
@@ -122,7 +121,7 @@
       .mock img{ width:100%; }
     }
 
-    /* Tarjetas de las fases */
+    /* Fases */
     .grid{display:grid; gap:16px; grid-template-columns:repeat(3,1fr)}
     @media (max-width:900px){ .grid{grid-template-columns:1fr} }
     h2{font-size:22px; margin:0 0 6px}
@@ -131,16 +130,6 @@
     .list{padding-left:18px; margin:10px 0 0}
     .badge-free{color:var(--mint); font-weight:800}
     a{color:var(--mint)}
-
-    /* Sección ejemplo de chat (medio de la landing) */
-    .chat-demo{ margin:60px auto; max-width:420px; text-align:center; }
-    .chat-wrapper{
-      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.25));
-      border:1px solid rgba(1,170,199,.25);
-      border-radius:28px; padding:14px 12px 18px;
-      box-shadow:0 12px 32px rgba(0,0,0,.4);
-    }
-    .chat-wrapper img{ width:100%; height:auto; border-radius:22px; display:block; }
 
     footer{margin:48px 0 24px; font-size:12px; color:var(--muted); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
   </style>
@@ -155,7 +144,7 @@
       <span class="tag">Próximamente</span>
     </header>
 
-    <!-- HERO con degradé y mockup a la derecha -->
+    <!-- HERO -->
     <section class="hero">
       <div>
         <h1>Asistente con IA para <br/>inmobiliarias en WhatsApp</h1>
@@ -173,7 +162,7 @@
       </div>
 
       <div>
-        <!-- Mockup del chat a la derecha -->
+        <!-- Mockup -->
         <figure class="mock">
           <img src="assets/whatsapp_chat.png" alt="Ejemplo de conversación con ChatLupa en WhatsApp" loading="eager" decoding="async">
         </figure>
@@ -210,15 +199,6 @@
       </div>
     </section>
 
-    <!-- (Opcional) Dejar este bloque si querés reforzar abajo con otra imagen -->
-    <section class="chat-demo">
-      <h2>Así se ve ChatLupa en WhatsApp</h2>
-      <p class="muted">Consultá agenda, agregá notas y buscá clientes sin salir del chat.</p>
-      <div class="chat-wrapper">
-        <img src="assets/whatsapp_chat.png" alt="Ejemplo de conversación con ChatLupa en WhatsApp" loading="lazy" decoding="async">
-      </div>
-    </section>
-
     <footer>
       <span>© <span id="y"></span> ChatLupa. Todos los derechos reservados.</span>
       <span>Contacto: <a href="mailto:admin@lupaprop.com">admin@lupaprop.com</a></span>
@@ -230,6 +210,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
